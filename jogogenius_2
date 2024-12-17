@@ -1,0 +1,237 @@
+// pinos dos LEDs 
+int leds[4] = {9,8,7,6};
+// pinos dos botoes
+int botoes[4] = {2,3,4,5};
+//Pinos do display 
+int leds_display[7]={10,11,12,13,A0,A1,A2};
+// variáveis do jogo
+int sequencia[10];
+int nivel = 0;
+int estadoBotao;
+int comparaSequencia = 0;
+int estadoPartida = true;
+
+
+void setup(){
+//definindo que os pinos dos leds são saídas
+  pinMode(leds[3],OUTPUT);
+  pinMode(leds[2],OUTPUT);
+  pinMode(leds[1],OUTPUT);
+  pinMode(leds[0],OUTPUT); 
+//definindo que os pinos dos botoes são entradas
+  pinMode(botoes[3],INPUT_PULLUP);
+  pinMode(botoes[2],INPUT_PULLUP);
+  pinMode(botoes[1],INPUT_PULLUP);
+  pinMode(botoes[0],INPUT_PULLUP);
+  
+//defindindo pinos do display como saídas
+  pinMode(leds_display[10],OUTPUT);
+  pinMode(leds_display[11],OUTPUT);
+  pinMode(leds_display[12],OUTPUT);
+  pinMode(leds_display[13],OUTPUT);
+  pinMode(leds_display[A0],OUTPUT);
+  pinMode(leds_display[A1],OUTPUT);
+  pinMode(leds_display[A2],OUTPUT);
+  
+  
+  inicioJogo();
+  
+}
+void loop(){
+  
+  proximoNivel();
+  reproduzirSequencia(); 
+  contagem(nivel);
+  
+  if(jogador()){
+    nivel++;
+  }else {
+    comparaSequencia = 0;
+    nivel = 0;
+  }
+}
+
+
+//criterio 2: ascender e apagar em ordem especifica
+ void inicioJogo() {
+
+  for(int i=0; i<3; i++) 
+  {
+    digitalWrite(9,HIGH);
+    digitalWrite(8,LOW);
+    digitalWrite(7,LOW);
+    digitalWrite(6,LOW);
+    delay(300);
+    
+    digitalWrite(9,LOW);
+    digitalWrite(8,HIGH);
+    digitalWrite(7,LOW);
+    digitalWrite(6,LOW);
+    delay(300);
+    
+    digitalWrite(9,LOW);
+    digitalWrite(8,LOW);
+    digitalWrite(7,HIGH);
+    digitalWrite(6,LOW);
+    delay(300);
+    
+    digitalWrite(9,LOW);
+    digitalWrite(8,LOW);
+    digitalWrite(7,LOW);
+    digitalWrite(6,HIGH);
+    delay(300);
+    digitalWrite(6,LOW);
+  
+  }
+  delay(1000);
+  proximoNivel();
+ }
+//gerar o nivel do jogo e progredi-lo  
+void proximoNivel() 
+{
+  if(nivel <= sequencia[10]){
+    int numAleatorio = random(4);
+    sequencia[nivel] = numAleatorio;
+  }
+}
+//acender os leds de acordo com o nivel
+ void reproduzirSequencia()
+  {
+    for(int i=0; i < nivel; i++){
+      digitalWrite(leds[sequencia[i]],HIGH);
+      delay(500);
+      digitalWrite(leds[sequencia[i]],LOW);
+      delay(500);
+    }
+  }
+//confere se o jogador realizou alguma ação 
+ bool jogador() {
+  for (int i = 0; i < nivel; i++) {
+    bool jogou = false;
+   	 while (!jogou) {
+      for (int i = 0; i < 4; i++) {
+        if (digitalRead(botoes[i]) == HIGH) {
+          estadoBotao = i;
+          digitalWrite(leds[i], HIGH);
+          delay(500);
+          digitalWrite(leds[i], LOW);
+          delay(500);
+
+          jogou = true;
+        }
+      }
+    }
+    if (sequencia[comparaSequencia] != estadoBotao) {
+      estadoPartida = false;
+      reiniciarJogo();
+      break;
+    }
+    comparaSequencia++;
+  }
+  comparaSequencia = 0;
+  return estadoPartida; 
+}
+
+void reiniciarJogo() {
+// para o jogo reiniciar todas as variaveis devem voltar a 0
+  nivel = 0;
+  comparaSequencia = 0;
+  estadoPartida = true;
+  
+  delay(1000); 
+  inicioJogo(); 
+}
+
+void contagem(int nivel){ 
+  if(nivel==0){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,HIGH);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,LOW);
+    delay(500);
+  }
+  if(nivel==1){
+    digitalWrite(10,LOW);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,LOW);
+    digitalWrite(A2,LOW);
+  }
+  if(nivel==2){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,LOW);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,HIGH);
+    digitalWrite(A1,LOW);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==3){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,LOW);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==4){
+    digitalWrite(10,LOW);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==5){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,LOW);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==6){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,LOW);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,HIGH);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==7){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,LOW);
+    digitalWrite(A2,LOW);
+  }
+  if(nivel==8){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,HIGH);
+    digitalWrite(A0,HIGH);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,HIGH);
+  }
+  if(nivel==9){
+    digitalWrite(10,HIGH);
+    digitalWrite(11,HIGH);
+    digitalWrite(12,HIGH);
+    digitalWrite(13,LOW);
+    digitalWrite(A0,LOW);
+    digitalWrite(A1,HIGH);
+    digitalWrite(A2,HIGH);
+  }
+ }
